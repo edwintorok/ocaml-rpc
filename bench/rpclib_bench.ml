@@ -34,21 +34,22 @@ let bench_protocol name of_string to_string =
   let open Bechamel in
   let encode () = to_string rpc
   and decode () = of_string serialized in
-  Test.make_grouped ~name
-  [ Test.make ~name:("to_string") Staged.(stage encode)
-  ; Test.make ~name:("of_string") Staged.(stage decode)
-  ]
+  Test.make ~name Staged.(stage encode), Test.make ~name Staged.(stage decode)
+
 
 let sexplib_of_string s = s |> Sexplib.Sexp.of_string |> Csexprpc.t_of_sexp
 let sexplib_to_string s = s |> Csexprpc.sexp_of_t |> Sexplib.Sexp.to_string_mach
 
 let tests =
-  Bechamel.Test.make_grouped ~name:"rpclib"
-  [ bench_protocol "xmlrpc" Xmlrpc.of_string Xmlrpc.to_string
-  ; bench_protocol "jsonrpc" Jsonrpc.of_string Jsonrpc.to_string
-  ; bench_protocol "csexp" Csexprpc.of_string Csexprpc.to_string
-  ; bench_protocol "sexplib" sexplib_of_string sexplib_to_string
-  ]
+  let xml1, xml2 = bench_protocol "xmlrpc" Xmlrpc.of_string Xmlrpc.to_string
+  and json1, json2 = bench_protocol "jsonrpc" Jsonrpc.of_string Jsonrpc.to_string
+  and csexp1, csexp2 = bench_protocol "csexp" Csexprpc.of_string Csexprpc.to_string
+  and sexp1, sexp2 = bench_protocol "sexplib" sexplib_of_string sexplib_to_string in
+  Bechamel.Test.make_grouped
+    ~name:"rpc"
+    [ Bechamel.Test.make_grouped ~name:"to_string" [ xml1; json1; csexp1; sexp1 ]
+    ; Bechamel.Test.make_grouped ~name:"of_string" [ xml2; json2; csexp2; sexp2 ]
+    ]
 
-let () =
-  Bechamel_simple_cli.cli tests
+
+let () = Bechamel_simple_cli.cli tests
