@@ -5,4 +5,5 @@ let () =
     ; "Json", Json.tests
     ; "Xml_xapi", Xml_xapi.tests
     ; "Encoding", Encoding.tests
+    ; "Csexp", Test_csexp.tests
     ]
