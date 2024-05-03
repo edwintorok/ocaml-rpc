@@ -1,5 +1,5 @@
 (executable
 	(public_name rpclib_bench)
-	(libraries rpclib.xml rpclib.json rpclib.csexp bechamel bechamel-notty notty.unix fmt)
+	(libraries rpclib.xml rpclib.json rpclib.csexp bechamel bechamel-notty notty.unix fmt sexplib)
 	(package rpclib-bench)
 )

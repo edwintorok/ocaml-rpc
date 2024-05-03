@@ -39,11 +39,15 @@ let bench_protocol name of_string to_string =
   ; Test.make ~name:("of_string") Staged.(stage decode)
   ]
 
+let sexplib_of_string s = s |> Sexplib.Sexp.of_string |> Csexprpc.t_of_sexp
+let sexplib_to_string s = s |> Csexprpc.sexp_of_t |> Sexplib.Sexp.to_string_mach
+
 let tests =
   Bechamel.Test.make_grouped ~name:"rpclib"
   [ bench_protocol "xmlrpc" Xmlrpc.of_string Xmlrpc.to_string
   ; bench_protocol "jsonrpc" Jsonrpc.of_string Jsonrpc.to_string
   ; bench_protocol "csexp" Csexprpc.of_string Csexprpc.to_string
+  ; bench_protocol "sexplib" sexplib_of_string sexplib_to_string
   ]
 
 let () =
